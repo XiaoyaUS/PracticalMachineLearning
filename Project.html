@@ -102,8 +102,8 @@ dim(training)</code></pre>
 <pre class="r"><code>dim(testing)</code></pre>
 <pre><code>## [1]  20 160</code></pre>
 </div>
-<div id="split-training-data-into-60-traing-and-40-testing" class="section level4">
-<h4>Split training data into 60% traing and 40% testing</h4>
+<div id="split-training-data-set-into-60-mytraining-data-set-and-40-mytesting-data-set." class="section level4">
+<h4>Split training data set into 60% mytraining data set and 40% mytesting data set.</h4>
 <pre class="r"><code>idx &lt;- createDataPartition(y=training$classe, p=0.6, list=FALSE )
 mytraining &lt;- training[idx,]
 mytesting &lt;-  training[-idx,]
@@ -112,8 +112,8 @@ dim(mytraining)</code></pre>
 <pre class="r"><code>dim(mytesting)</code></pre>
 <pre><code>## [1] 7846   53</code></pre>
 </div>
-<div id="using-random-forest-model-for-prediction." class="section level4">
-<h4>Using Random Forest Model for Prediction.</h4>
+<div id="using-random-forests-model-for-prediction." class="section level4">
+<h4>Using Random Forests Model for Prediction.</h4>
 <pre class="r"><code>set.seed(333)
 x &lt;- mytraining[-ncol(mytraining)]
 y &lt;- mytraining$classe
@@ -122,40 +122,40 @@ modFit &lt;- randomForest(x,y, data=mytraining)</code></pre>
 </div>
 <div id="conclusions" class="section level2">
 <h2>Conclusions</h2>
-<p>Using our testing data to validation the result and errors. It shows Accuracy 0.99.</p>
+<p>Using mytesting data set to validate the prediction result. It shows Accuracy 0.99.</p>
 <pre class="r"><code>pred2 &lt;- predict(modFit, mytesting, type = &quot;class&quot;)
 confusionMatrix(pred2,mytesting$classe)</code></pre>
 <pre><code>## Confusion Matrix and Statistics
 ## 
 ##           Reference
 ## Prediction    A    B    C    D    E
-##          A 2229    4    0    0    0
-##          B    3 1504    9    0    0
-##          C    0   10 1357   22    0
-##          D    0    0    2 1264    4
-##          E    0    0    0    0 1438
+##          A 2231    6    0    0    0
+##          B    0 1510   16    0    0
+##          C    1    1 1351   20    0
+##          D    0    0    1 1266    4
+##          E    0    1    0    0 1438
 ## 
 ## Overall Statistics
-##                                          
-##                Accuracy : 0.9931         
-##                  95% CI : (0.991, 0.9948)
-##     No Information Rate : 0.2845         
-##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16      
-##                                          
-##                   Kappa : 0.9913         
-##  Mcnemar's Test P-Value : NA             
+##                                           
+##                Accuracy : 0.9936          
+##                  95% CI : (0.9916, 0.9953)
+##     No Information Rate : 0.2845          
+##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+##                                           
+##                   Kappa : 0.9919          
+##  Mcnemar's Test P-Value : NA              
 ## 
 ## Statistics by Class:
 ## 
 ##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity            0.9987   0.9908   0.9920   0.9829   0.9972
-## Specificity            0.9993   0.9981   0.9951   0.9991   1.0000
-## Pos Pred Value         0.9982   0.9921   0.9770   0.9953   1.0000
-## Neg Pred Value         0.9995   0.9978   0.9983   0.9967   0.9994
+## Sensitivity            0.9996   0.9947   0.9876   0.9844   0.9972
+## Specificity            0.9989   0.9975   0.9966   0.9992   0.9998
+## Pos Pred Value         0.9973   0.9895   0.9840   0.9961   0.9993
+## Neg Pred Value         0.9998   0.9987   0.9974   0.9970   0.9994
 ## Prevalence             0.2845   0.1935   0.1744   0.1639   0.1838
-## Detection Rate         0.2841   0.1917   0.1730   0.1611   0.1833
-## Detection Prevalence   0.2846   0.1932   0.1770   0.1619   0.1833
-## Balanced Accuracy      0.9990   0.9944   0.9935   0.9910   0.9986</code></pre>
+## Detection Rate         0.2843   0.1925   0.1722   0.1614   0.1833
+## Detection Prevalence   0.2851   0.1945   0.1750   0.1620   0.1834
+## Balanced Accuracy      0.9992   0.9961   0.9921   0.9918   0.9985</code></pre>
 </div>
 <div id="prediction-assignment-submission" class="section level2">
 <h2>Prediction Assignment Submission</h2>

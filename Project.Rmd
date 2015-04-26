@@ -56,7 +56,7 @@ dim(training)
 dim(testing)
 ```
 
-#### Split training data into 60% traing and 40% testing
+#### Split training data set into 60% mytraining data set and 40% mytesting data set.
 ```{r}
 idx <- createDataPartition(y=training$classe, p=0.6, list=FALSE )
 mytraining <- training[idx,]
@@ -65,7 +65,7 @@ dim(mytraining)
 dim(mytesting)
 ```
 
-#### Using Random Forest Model for Prediction.
+#### Using Random Forests Model for Prediction.
 
 ```{r}
 set.seed(333)
@@ -76,7 +76,7 @@ modFit <- randomForest(x,y, data=mytraining)
 
 ## Conclusions  
 
-Using our testing data to validation the result and errors. It shows Accuracy 0.99. 
+Using mytesting data set to validate the prediction result. It shows Accuracy 0.99. 
 ```{r}
 pred2 <- predict(modFit, mytesting, type = "class")
 confusionMatrix(pred2,mytesting$classe)
