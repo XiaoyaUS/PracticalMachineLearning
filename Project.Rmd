@@ -1,0 +1,106 @@
+---
+title: "Practical Machine Learning Project"
+author: "Xiaoya Zhu"
+date: "04/25/2015"
+output: html_document
+---
+
+## Synopsis
+
+        This data analysis is to explore the HAR (Human Activity Recognition) Weight Lifting Exercises Dataset. The goal is to predict the manner in which they did the exercise. 
+
+Read more information from this web site: 
+
+[HAR HOME](http://groupware.les.inf.puc-rio.br/har)
+
+## Data Processing 
+####    Download file and load data.
+
+The training data can be downloaded from this web site:
+[training](https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv)
+
+The test data can be downloaded from this web site:
+[testing](https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv).
+
+```{r,downloadfile, message=F, warning=F}
+library(caret)
+library(rpart)
+library(randomForest)
+library(AppliedPredictiveModeling)
+
+trainingURL <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+testingURL <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+if(!file.exists("training.csv"))
+download.file(trainingURL, destfile="training.csv", method="curl")
+if(!file.exists("testing.csv"))
+download.file(testingURL, destfile="testing.csv", method="curl")
+training <- read.csv("training.csv", na.strings=c("NA","#DIV/0!",""))
+testing <- read.csv("testing.csv", na.strings=c("NA","#DIV/0!",""))
+dim(training)
+dim(testing)
+```
+
+#### Clean data
+
+Cast column from 8 to the last column to be numeric.
+Remove column 1 to 7 which are not related with our model.
+Remove columns only have value NA or 0.
+
+```{r}
+for(i in c(8:ncol(training)-1)) {training[,i] = as.numeric(as.character(training[,i]))}
+for(i in c(8:ncol(testing)-1)) {testing[,i] = as.numeric(as.character(testing[,i]))}
+columns <- colnames(training[colSums(is.na(training)) == 0])[-(1:7)]
+training <- training[columns]
+
+dim(training)
+dim(testing)
+```
+
+#### Split training data into 60% traing and 40% testing
+```{r}
+idx <- createDataPartition(y=training$classe, p=0.6, list=FALSE )
+mytraining <- training[idx,]
+mytesting <-  training[-idx,]
+dim(mytraining)
+dim(mytesting)
+```
+
+#### Using Random Forest Model for Prediction.
+
+```{r}
+set.seed(333)
+x <- mytraining[-ncol(mytraining)]
+y <- mytraining$classe
+modFit <- randomForest(x,y, data=mytraining)
+```
+
+## Conclusions  
+
+Using our testing data to validation the result and errors. It shows Accuracy 0.99. 
+```{r}
+pred2 <- predict(modFit, mytesting, type = "class")
+confusionMatrix(pred2,mytesting$classe)
+```
+
+## Prediction Assignment Submission
+
+```{r}
+pml_write_files = function(x){
+  n = length(x)
+  for(i in 1:n){
+    filename = paste0("problem_id_",i,".txt")
+    write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
+  }
+}
+answers <-  predict(modFit, testing[columns[columns!='classe']], type = "class")
+pml_write_files(answers)
+```
+
+
+
+
+
+
+
+
+
